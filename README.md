@@ -105,34 +105,14 @@ pip install https://github.com/psycopg/psycopg2/releases/download/2.9.9/psycopg2
 
 ### 4. Configure Environment Variables
 
-Create a `.env` file in the project root:
-
+Create a local `.env` file from the provided template:
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your configuration:
+Edit .env as needed for your environment (at minimum, set SECRET_KEY).
 
-```env
-# Django
-SECRET_KEY=your-secret-key-here-change-in-production
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-
-# Database
-DB_NAME=crm_db
-DB_USER=crm_user
-DB_PASSWORD=crm_password
-DB_HOST=127.0.0.1
-DB_PORT=5433  # Use 5432 on Linux/macOS if no local PostgreSQL conflicts
-
-# Redis
-REDIS_URL=redis://localhost:6379/0
-
-# Celery
-CELERY_BROKER_URL=redis://localhost:6379/0
-CELERY_RESULT_BACKEND=redis://localhost:6379/0
-```
+Configuration is documented in .env.example.
 
 **Important**: Never commit the `.env` file to version control.
 
