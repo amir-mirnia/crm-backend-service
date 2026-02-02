@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Campaigns - CRM Internal Dashboard{% endblock %}
+
+{% block content %}
+<h1>Campaigns</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Restaurant</th>
+                <th>Status</th>
+                <th>Segment</th>
+                <th>Events</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+            <tr>
+                <td>{{ campaign.id }}</td>
+                <td>
+                    <a href="{% url 'internal:campaign_detail' campaign.id %}">
+                        {{ campaign.name }}
+                    </a>
+                </td>
+                <td>{{ campaign.restaurant.name }}</td>
+                <td>
+                    <span class="badge status-badge bg-{% if campaign.status == 'running' %}success{% elif campaign.status == 'completed' %}info{% elif campaign.status == 'paused' %}warning{% else %}secondary{% endif %}">
+                        {{ campaign.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    {{ campaign.get_segment_type_display }}: {{ campaign.segment_value }}
+                </td>
+                <td>
+                    <small>
+                        Total: {{ campaign.total_events }}<br>
+                        Sent: <span class="text-success">{{ campaign.sent_events }}</span><br>
+                        Failed: <span class="text-danger">{{ campaign.failed_events }}</span>
+                    </small>
+                </td>
+                <td>{{ campaign.created_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                    <a href="{% url 'internal:campaign_detail' campaign.id %}" class="btn btn-sm btn-primary">View</a>
+                    {% if campaign.status == 'draft' or campaign.status == 'paused' %}
+                        <form method="post" action="{% url 'internal:campaign_run' campaign.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-success">Run</button>
+                        </form>
+                    {% endif %}
+                    {% if campaign.status == 'running' %}
+                        <form method="post" action="{% url 'internal:campaign_pause' campaign.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-warning">Pause</button>
+                        </form>
+                    {% endif %}
+                    {% if campaign.status == 'paused' %}
+                        <form method="post" action="{% url 'internal:campaign_resume' campaign.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-success">Resume</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center">No campaigns found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
