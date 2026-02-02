@@ -1,6 +1,6 @@
 # CRM Backend Service
 
-A production-leaning Django CRM backend service with automated outreach capabilities, built to demonstrate high-quality Django ORM usage as the primary abstraction layer for PostgreSQL database operations.
+A production-leaning backend service for customer lifecycle management and automated outreach, built with Django REST Framework, Celery, PostgreSQL, and Redis. The system provides RESTful APIs for customer segmentation and campaign execution, and includes a minimal Bootstrap-based internal dashboard for operational visibility.
 
 ## Features
 
@@ -12,29 +12,42 @@ A production-leaning Django CRM backend service with automated outreach capabili
 - **Audit Trail**: Complete outreach event tracking with status and error handling
 - **REST API**: Full-featured REST API using Django REST Framework
 - **Internal Dashboard**: Bootstrap-based ops dashboard for campaign management
-- **Comprehensive Tests**: Automated test suite covering all major functionality
+- **Comprehensive Tests**: Automated test suite covering core functionality
 
 ## Architecture
 
-### ORM-First Design
+### ORM-First Backend Design
 
-This project demonstrates intentional, high-quality use of the Django ORM:
+The backend is designed around Django’s ORM as the primary data access layer, prioritizing correctness, consistency, and maintainability.
 
-- **All database access** goes through Django ORM (no raw SQL)
-- **Advanced QuerySet usage**: `filter`, `exclude`, `annotate`, `aggregate`
-- **Query optimization**: `select_related` and `prefetch_related` to avoid N+1 queries
-- **Transaction safety**: `transaction.atomic` and `select_for_update` for consistency
-- **Idempotent operations**: `get_or_create` and `update_or_create` patterns
-- **Model-level constraints**: Unique constraints and indexes defined at the model level
-- **Service layer**: Business logic separated from views, using ORM safely
+- **Centralized data access** All database interactions flow through the Django ORM; raw SQL is intentionally avoided
+- **Advanced querying**: Use of filtered QuerySets, annotations, and aggregations
+- **Query optimization**: Consistent use of `select_related` and `prefetch_related` to avoid N+1 query patterns
+- **Transactional integrity**: Critical write paths use `transaction.atomic` and row-level locking (`select_for_update`) to ensure correctness under concurrent access
+- **Idempotent operations**: Campaign execution and outreach event creation rely on idempotent ORM patterns (`get_or_create`, `update_or_create`)
+- **Model-level guarantees**: Uniqueness constraints and indexes defined at the schema level
+- **Service layer**: Business logic is encapsulated in services, keeping views thin and focused
+
+### MTV Alignment
+
+The codebase follows Django’s MTV (Model–Template–View) architecture:
+
+- **Models** define domain entities, constraints, and persistence logic.
+- **Views** handle request orchestration via DRF viewsets and internal controllers.
+- **Templates** are used exclusively for a minimal, server-rendered internal dashboard.
+
+This separation keeps domain logic isolated, APIs clean, and presentation concerns intentionally scoped.
+
 
 ### Technology Stack
 
-- **Backend**: Django 4.2 + Django REST Framework
-- **Database**: PostgreSQL (accessed via Django ORM only)
-- **Task Queue**: Celery with Redis broker
-- **Cache/Broker**: Redis
-- **Containerization**: Docker Compose
+- **Language**: Python 3.9+
+- **Application Layer**: Django + Django REST Framework
+- **Data Persistence**: PostgreSQL (via Django ORM)
+- **Asynchronous Processing**: Celery with Redis as broker and result backend
+- **Local Infrastructure**: Docker Compose
+
+**Note**: Specific package versions are pinned in `requirements.txt` and `docker-compose.yml` for reproducible deployments.
 
 ## Prerequisites
 
