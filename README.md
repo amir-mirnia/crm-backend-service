@@ -1,6 +1,6 @@
 # CRM Backend Service
 
-A production-leaning backend service for customer lifecycle management and automated outreach, built with Django REST Framework, Celery, PostgreSQL, and Redis. The system provides RESTful APIs for customer segmentation and campaign execution, and includes a minimal Bootstrap-based internal dashboard for operational visibility.
+A production-leaning backend service for customer lifecycle management and automated outreach, built with Django REST Framework, PostgreSQL, Django ORM, Celery, Redis and Bootstrap. The system provides RESTful APIs for customer segmentation and campaign execution, and includes a minimal Bootstrap-based internal dashboard for operational visibility.
 
 ## Features
 
